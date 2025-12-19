@@ -59,21 +59,29 @@ The project is divided into two main folders:
 1. **Search Authors**:
 
 **GET** /search/authors
+
 **Query Parameters**:
+
 **q (string)**: The search query (minimum 2 characters).
+
 **Response**: A list of authors matching the search query.
 
 2. **Search Books**:
 
 **GET** /search/books
+
 **Query Parameters**:
+
 **q (string)**: The search query (minimum 2 characters).
+
 **Response**: A list of book titles matching the search query.
 
 3. **Book Recommendations**:
 
 **POST** /recommend
+
 **Request Body**: A JSON object containing user preferences (Refer to the PreferenceRequest schema).
+
 **Response**: A list of recommended books based on the user's preferences.
 
 ## How to Use
@@ -86,10 +94,17 @@ The project is divided into two main folders:
 ## File Structure
 
 /BookMatch
+
     ├── /Frontend
-    │    ├── index.html       **Main HTML file for the UI**
-    │    ├── script.js        **JavaScript file for handling user interactions**
-    │    └── style.css        **Custom styling for the frontend**
+    
+      │    ├── index.html       **Main HTML file for the UI**
+    
+      │    ├── script.js        **JavaScript file for handling user interactions**
+    
+      │    └── style.css        **Custom styling for the frontend**
+    
     ├── /Backend
-    │    ├── main.py          **FastAPI backend to handle requests**
-    │    └── .env             **Environment file for Google Books API Key**
+    
+      │    ├── main.py          **FastAPI backend to handle requests**
+
+      │    └── .env             **Environment file for Google Books API Key**
