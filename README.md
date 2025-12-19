@@ -39,7 +39,7 @@ The project is divided into two main folders:
 
 3. **Google Book API Key**:
    - Create an .env file in Backend Folder and store your google API key there:
-     ### GOOGLE_BOOKS_API_KEY=YOUR_API_KEY
+     #### GOOGLE_BOOKS_API_KEY=YOUR_API_KEY
 
 4. **Getting the Server Live**:
    - Open the Backend Folder in VS code or any Code Editor
@@ -112,6 +112,7 @@ The project is divided into two main folders:
       │    ├── main.py          **FastAPI backend to handle requests**
 
       │    └── .env             **Environment file for Google Books API Key**
+
 
 
 
