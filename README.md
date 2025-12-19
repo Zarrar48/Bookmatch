@@ -93,7 +93,7 @@ The project is divided into two main folders:
 
 ## File Structure
 
-├── /BookMatch
+/BookMatch
 
     ├── /Frontend
     
