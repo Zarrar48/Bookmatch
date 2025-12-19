@@ -1,0 +1,49 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at top, #1d4ed8 0, #0f172a 35%, #020617 100%);
+    min-height: 100vh;
+}
+
+.step-content {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.step-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.book-card {
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 18px -6px rgba(15, 23, 42, 0.4);
+}
+
+.book-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 30px -10px rgba(15, 23, 42, 0.7);
+}
+
+.interest-tag {
+    transition: all 0.2s ease;
+}
+
+.interest-tag:hover {
+    transform: translateY(-2px);
+}
+
+.search-dropdown {
+    max-height: 200px;
+    overflow-y: auto;
+}

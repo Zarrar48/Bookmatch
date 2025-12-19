@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMatch - Personalized Book Recommendations</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="relative w-full max-w-4xl">
+        <!-- Background accent blobs -->
+        <div class="pointer-events-none absolute -top-24 -right-24 w-64 h-64 bg-blue-500 rounded-full opacity-20 blur-3xl"></div>
+        <div class="pointer-events-none absolute -bottom-32 -left-10 w-72 h-72 bg-indigo-500 rounded-full opacity-20 blur-3xl"></div>
+
+        <div class="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl w-full overflow-hidden border border-slate-200">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center">
+                                <i class="fas fa-book-reader text-2xl"></i>
+                            </div>
+                            <h1 class="text-2xl font-bold tracking-tight">BookMatch</h1>
+                        </div>
+                        <p class="text-blue-100 mt-2 text-sm">
+                            Smart, personalized book recommendations for your next great read.
+                        </p>
+                    </div>
+                    <div class="hidden sm:flex flex-col items-end text-sm text-blue-100">
+                        <span class="uppercase tracking-widest text-[10px]">Powered by</span>
+                        <span class="font-semibold flex items-center">
+                            <i class="fab fa-google text-yellow-300 mr-1"></i> Google Books API
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="px-6 pt-4">
+                <div class="flex justify-between mb-2 text-xs sm:text-sm">
+                    <span class="font-medium text-slate-700">Step <span id="currentStepDisplay">1</span> of <span id="totalStepsDisplay">8</span></span>
+                    <span class="font-medium text-slate-700"><span id="progressPercentage">0</span>% Complete</span>
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-2">
+                    <div id="progressBar" class="bg-gradient-to-r from-blue-600 to-indigo-600 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between mt-1 text-[11px] text-slate-500">
+                    <div>Profile</div>
+                    <div>Habits</div>
+                    <div>Preferences</div>
+                    <div>Results</div>
+                </div>
+            </div>
+
+            <!-- Form Steps Container -->
+            <form id="recommendationForm" class="p-6">
+                <!-- Step 1: Personal Info -->
+                <div id="step-1" class="step-content active">
+                    <h2 class="text-xl font-semibold mb-1 text-slate-900">Let’s get to know you</h2>
+                    <p class="text-sm text-slate-500 mb-4">We only use this to personalize your recommendations.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="userName" class="block text-slate-700 mb-1 text-sm font-medium">
+                                What's your name?
+                            </label>
+                            <input type="text" id="userName" name="userName" placeholder="Enter your name"
+                                   class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="birthDate" class="block text-slate-700 mb-1 text-sm font-medium">Date of birth</label>
+                                <input type="date" id="birthDate" name="birthDate"
+                                       class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                            </div>
+                            <!-- <div>
+                                <label for="userEmail" class="block text-slate-700 mb-1 text-sm font-medium">
+                                    Email (optional)
+                                </label>
+                                <input type="email" id="userEmail" name="userEmail" placeholder="your.email@example.com"
+                                       class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                            </div> -->
+                        </div>
+                    </div>
+                    <div class="flex justify-end mt-6">
+                        <button type="button" onclick="nextStep()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-sm font-medium shadow-md flex items-center">
+                            Continue <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Reading Frequency -->
+                <div id="step-2" class="step-content">
+                    <h2 class="text-xl font-semibold mb-1 text-slate-900">Your reading habits</h2>
+                    <p class="text-sm text-slate-500 mb-4">This helps us match books to your lifestyle.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-slate-700 mb-2 text-sm font-medium">How often do you read?</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="readingFrequency" value="daily" class="hidden">
+                                    <i class="fas fa-book-open text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-sm">Daily</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="readingFrequency" value="weekly" class="hidden">
+                                    <i class="fas fa-calendar-week text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-sm">Weekly</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="readingFrequency" value="monthly" class="hidden">
+                                    <i class="fas fa-calendar-alt text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-sm">Monthly</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="readingFrequency" value="rarely" class="hidden">
+                                    <i class="fas fa-book text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-sm">Rarely</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="readingTime" class="block text-slate-700 mb-1 text-sm font-medium">
+                                When do you usually read?
+                            </label>
+                            <select id="readingTime" name="readingTime"
+                                    class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                <option value="">Select preferred reading time</option>
+                                <option value="morning">Morning</option>
+                                <option value="afternoon">Afternoon</option>
+                                <option value="evening">Evening</option>
+                                <option value="night">Late Night</option>
+                                <option value="anytime">Anytime</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-6">
+                        <button type="button" onclick="prevStep()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-lg hover:bg-slate-300 text-sm font-medium flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Back
+                        </button>
+                        <button type="button" onclick="nextStep()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center">
+                            Continue <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Reading Format + extra preferences -->
+                <div id="step-3" class="step-content">
+                    <h2 class="text-xl font-semibold mb-1 text-slate-900">Reading preferences</h2>
+                    <p class="text-sm text-slate-500 mb-4">Tell us how you like to read.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-slate-700 mb-2 text-sm font-medium">How do you prefer to read?</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="checkbox" name="readingFormat" value="physical" class="hidden">
+                                    <i class="fas fa-book text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-sm">Physical</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="checkbox" name="readingFormat" value="ebook" class="hidden">
+                                    <i class="fas fa-tablet-alt text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-sm">E-books</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="checkbox" name="readingFormat" value="audiobook" class="hidden">
+                                    <i class="fas fa-headphones text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-sm">Audiobooks</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 mb-2 text-sm font-medium">Preferred book length</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="bookLength" value="short" class="hidden">
+                                    <i class="fas fa-file text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-xs">Short (&lt; 200 pages)</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="bookLength" value="medium" class="hidden">
+                                    <i class="fas fa-book text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-xs">Medium (200–400)</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="bookLength" value="long" class="hidden">
+                                    <i class="fas fa-book-open text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-xs">Long (&gt; 400)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="preferredLanguage" class="block text-slate-700 mb-1 text-sm font-medium">
+                                    Preferred language
+                                </label>
+                                <select id="preferredLanguage" name="preferredLanguage"
+                                        class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                    <option value="">No preference</option>
+                                    <option value="en">English</option>
+
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-slate-700 mb-1 text-sm font-medium">
+                                    Content maturity level
+                                </label>
+                                <div class="grid grid-cols-3 gap-2 text-xs">
+                                    <label class="flex flex-col items-center p-3 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                        <input type="radio" name="contentMaturity" value="clean" class="hidden">
+                                        <i class="fas fa-child text-blue-500 mb-1"></i>
+                                        <span class="font-medium text-center">Clean</span>
+                                    </label>
+                                    <label class="flex flex-col items-center p-3 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                        <input type="radio" name="contentMaturity" value="moderate" class="hidden">
+                                        <i class="fas fa-user text-blue-500 mb-1"></i>
+                                        <span class="font-medium text-center">Some themes</span>
+                                    </label>
+                                    <label class="flex flex-col items-center p-3 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                        <input type="radio" name="contentMaturity" value="any" class="hidden">
+                                        <i class="fas fa-user-shield text-blue-500 mb-1"></i>
+                                        <span class="font-medium text-center">Anything</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-6">
+                        <button type="button" onclick="prevStep()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-lg hover:bg-slate-300 text-sm font-medium flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Back
+                        </button>
+                        <button type="button" onclick="nextStep()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center">
+                            Continue <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Primary Genres -->
+                <div id="step-4" class="step-content">
+                    <h2 class="text-xl font-semibold mb-1 text-slate-900">Your favorite genres</h2>
+                    <p class="text-sm text-slate-500 mb-4">Choose up to 3 genres you enjoy the most.</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="genreContainer"></div>
+                    <div class="flex justify-between mt-6">
+                        <button type="button" onclick="prevStep()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-lg hover:bg-slate-300 text-sm font-medium flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Back
+                        </button>
+                        <button type="button" onclick="nextStep()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center">
+                            Continue <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Favorite Authors -->
+                <div id="step-5" class="step-content">
+                    <h2 class="text-xl font-semibold mb-1 text-slate-900">Favorite authors</h2>
+                    <p class="text-sm text-slate-500 mb-4">Search and add authors you already enjoy.</p>
+                    <div class="relative">
+                        <input type="text" id="authorSearch" placeholder="Search for authors..."
+                               class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                        <div id="authorResults" class="absolute z-10 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-lg search-dropdown hidden"></div>
+                    </div>
+                    <div id="selectedAuthors" class="mt-4 flex flex-wrap gap-2"></div>
+                    <div class="flex justify-between mt-6">
+                        <button type="button" onclick="prevStep()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-lg hover:bg-slate-300 text-sm font-medium flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Back
+                        </button>
+                        <button type="button" onclick="nextStep()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center">
+                            Continue <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 6: Books You've Enjoyed -->
+                <div id="step-6" class="step-content">
+                    <h2 class="text-xl font-semibold mb-1 text-slate-900">Books you’ve enjoyed</h2>
+                    <p class="text-sm text-slate-500 mb-4">This helps us find similar titles.</p>
+                    <div class="relative">
+                        <input type="text" id="bookSearch" placeholder="Search for books..."
+                               class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                        <div id="bookResults" class="absolute z-10 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-lg search-dropdown hidden"></div>
+                    </div>
+                    <div id="selectedBooks" class="mt-4 flex flex-wrap gap-2"></div>
+                    <div class="flex justify-between mt-6">
+                        <button type="button" onclick="prevStep()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-lg hover:bg-slate-300 text-sm font-medium flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Back
+                        </button>
+                        <button type="button" onclick="nextStep()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center">
+                            Continue <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 7: Reading Mood -->
+                <div id="step-7" class="step-content">
+                    <h2 class="text-xl font-semibold mb-1 text-slate-900">What are you in the mood for?</h2>
+                    <p class="text-sm text-slate-500 mb-4">We’ll pick books that match your vibe.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-slate-700 mb-2 text-sm font-medium">Reading experience</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="readingMood" value="light" class="hidden">
+                                    <i class="fas fa-smile text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-sm">Light & Easy</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="readingMood" value="thoughtful" class="hidden">
+                                    <i class="fas fa-brain text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-sm">Thought-provoking</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="readingMood" value="emotional" class="hidden">
+                                    <i class="fas fa-heart text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-sm">Emotional</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="readingMood" value="adventurous" class="hidden">
+                                    <i class="fas fa-mountain text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-sm">Adventurous</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 mb-2 text-sm font-medium">Preferred pacing</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="bookPacing" value="slow" class="hidden">
+                                    <i class="fas fa-igloo text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-sm">Slow</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="bookPacing" value="moderate" class="hidden">
+                                    <i class="fas fa-walking text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-sm">Moderate</span>
+                                </label>
+                                <label class="flex flex-col items-center p-4 border border-slate-300 rounded-lg cursor-pointer hover:bg-blue-50 transition interest-tag has-[:checked]:bg-blue-100 has-[:checked]:border-blue-500">
+                                    <input type="radio" name="bookPacing" value="fast" class="hidden">
+                                    <i class="fas fa-running text-blue-500 text-xl mb-2"></i>
+                                    <span class="font-medium text-center text-sm">Fast</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-6">
+                        <button type="button" onclick="prevStep()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-lg hover:bg-slate-300 text-sm font-medium flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Back
+                        </button>
+                        <button type="button" onclick="nextStep()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center">
+                            Get Recommendations <i class="fas fa-magic ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 8: Results -->
+                <div id="step-8" class="step-content">
+                    <h2 class="text-xl font-semibold mb-4 text-slate-900">Your personalized recommendations</h2>
+                    <div id="userGreeting" class="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                        <p class="text-slate-700 text-sm">
+                            Hi <span id="userNameDisplay" class="font-semibold"></span>, based on your preferences, here’s what we picked for you:
+                        </p>
+                    </div>
+                    <div id="recommendationHighlights" class="mb-4 p-4 bg-slate-50 rounded-lg border border-slate-100">
+                        <h3 class="font-semibold text-slate-800 mb-2 text-sm">Why we chose these:</h3>
+                        <ul id="highlightList" class="list-disc pl-5 text-slate-700 space-y-1 text-sm"></ul>
+                    </div>
+                    <div id="recommendationResults" class="space-y-4"></div>
+
+                    <div class="flex justify-center mt-8 space-x-4">
+                        <button type="button" onclick="prevStep()" class="bg-slate-200 text-slate-800 px-6 py-3 rounded-lg hover:bg-slate-300 text-sm font-medium flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Back
+                        </button>
+                        <button type="button" onclick="resetForm()" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 text-sm font-medium flex items-center">
+                            Start Over <i class="fas fa-redo ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
