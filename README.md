@@ -35,11 +35,13 @@ The project is divided into two main folders:
    
 2. **Install Dependencies**:
    - Run the following command in the terminal:
+     
       python -m pip install fastapi uvicorn python-dotenv httpx
 
 3. **Getting the Server Live**:
    - Open the Backend Folder in VS code or any Code Editor
    - Run the following command in terminal:
+     
       python -m uvicorn main:app --reload
 
 ### Frontend Setup
@@ -108,4 +110,5 @@ The project is divided into two main folders:
       │    ├── main.py          **FastAPI backend to handle requests**
 
       │    └── .env             **Environment file for Google Books API Key**
+
 
