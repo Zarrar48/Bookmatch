@@ -93,7 +93,7 @@ The project is divided into two main folders:
 
 ## File Structure
 
-/BookMatch
+├── /BookMatch
 
     ├── /Frontend
     
@@ -108,3 +108,4 @@ The project is divided into two main folders:
       │    ├── main.py          **FastAPI backend to handle requests**
 
       │    └── .env             **Environment file for Google Books API Key**
+
