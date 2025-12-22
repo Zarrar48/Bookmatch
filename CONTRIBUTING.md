@@ -8,10 +8,10 @@ Contributions of all kinds are welcome — bug fixes, improvements, and document
 1. **Fork the repository**
 2. **Clone your fork:**
    ```bash
-   git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+   git clone https://github.com/Zarrar48/Bookmatch.git
    
 ## Create a new branch for your changes:
-
+```bash
 git checkout -b feature-or-fix-name
 
 ## Project Structure
