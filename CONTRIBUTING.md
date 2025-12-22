@@ -12,8 +12,8 @@ Contributions of all kinds are welcome — bug fixes, improvements, and document
 
 
 ## Create a new branch for your changes:
-   ```bash
-   git checkout -b feature-or-fix-name
+    ```bash
+    git clone https://github.com/Zarrar48/Bookmatch.git
 
 ## Project Structure
 - **Backend**: Python (latest stable version)
